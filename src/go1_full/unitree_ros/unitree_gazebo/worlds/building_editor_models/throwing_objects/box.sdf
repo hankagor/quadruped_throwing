@@ -1,0 +1,48 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <model name="small_box">
+    <static>false</static>
+    <link name="link">
+      <pose>-0.06270 0.014267 0.256379 0 -0 0</pose>
+      <inertial>
+        <mass>0.5</mass> 
+        
+        <inertia>
+
+          <ixx>0.00355377</ixx>
+          <iyy>0.00375000</iyy>
+          <izz>0.00355377</izz>
+          <ixy>0.0</ixy>
+          <ixz>0.0</ixz>
+          <iyz>0.0</iyz>
+        </inertia>
+      </inertial>
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>0.15 0.141934 0.15</size>
+          </box>
+        </geometry>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>0.15 0.141934 0.15</size>
+          </box>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>10</mu>
+              <mu2>20</mu2>
+            </ode>
+          </friction>
+          <bounce>
+            <restitution_coefficient>0.0</restitution_coefficient>
+          </bounce>
+        </surface>
+      </collision>
+    </link>
+  </model>
+</sdf>
+

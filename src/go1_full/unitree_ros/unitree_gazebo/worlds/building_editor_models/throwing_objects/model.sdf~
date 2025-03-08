@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <model name="cone">
+    <static>false</static>
+    <link name="link">
+      <visual name="visual">
+        <geometry>
+          <cone>
+            <radius>0.5</radius>  <!-- Adjust the radius of the cone -->
+            <length>1.0</length>  <!-- Adjust the height of the cone -->
+          </cone>
+        </geometry>
+        <material>
+          <ambient>1 0 0 1</ambient>  <!-- Red color -->
+        </material>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <cone>
+            <radius>0.5</radius>
+            <length>1.0</length>
+          </cone>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass>1.0</mass>  <!-- Adjust the mass of the cone -->
+      </inertial>
+      
+    </link>
+  </model>
+  
+</sdf>
+

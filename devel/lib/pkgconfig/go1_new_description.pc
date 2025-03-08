@@ -1,0 +1,8 @@
+prefix=/home/hanka/catkin_ws_go1_full/devel
+
+Name: go1_new_description
+Description: Description of go1_new_description
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

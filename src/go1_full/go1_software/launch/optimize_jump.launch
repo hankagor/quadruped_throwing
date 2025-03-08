@@ -1,0 +1,25 @@
+<launch>
+  <arg name="use_bezier_coeff" default="false" />
+  <group unless="$(arg use_bezier_coeff)">
+    <param name="SINGLE_JUMP" value="false" />
+    <param name="OPTIMIZE_K" value="false" />
+    <param name="sine_jump" value="true" />
+    <param name="bezier_jump" value="false" />
+    <param name="jump_type" value="twist" />
+    <node name="optimize_pronking" pkg="go1_software" type="optimize_jump.py" output="screen" />
+    <node name="run_jump2" pkg="go1_software" type="run_jump2" output="screen"/>
+  </group>
+
+  <group if="$(arg use_bezier_coeff)">
+    <param name="RUN_JUMP" value="false"/>
+    <param name="num_jumps" value="1" />
+    <param name="jump_type" value="forward"/>
+    <param name="sine_jump" value="false" />
+    <param name="USE_PRUNER" value="false" />
+    <param name="bezier_jump" value="true" />
+    <param name="SINGLE_JUMP" value="false" />
+    <param name="OPTIMIZE_K" value="true" />
+    <node name="optimize_jump" pkg="go1_software" type="optimize_jump.py" output="screen" />
+    <node name="run_jump_bezier" pkg="go1_software" type="run_jump_bezier" output="screen" />
+  </group>
+</launch>

@@ -1,0 +1,59 @@
+<launch>
+    <arg name="wname" default="empty_world"/>  <!-- Use an empty world -->
+    <arg name="rname" default="laikago"/>      <!-- Robot name -->
+    <arg name="robot_path" value="(find $(arg rname)_description)"/> <!-- Robot path -->
+    <arg name="dollar" value="$"/>
+
+    <arg name="paused" default="true"/>
+    <arg name="use_sim_time" default="true"/>
+    <arg name="gui" default="true"/>
+    <arg name="headless" default="false"/>
+    <arg name="debug" default="false"/>
+    <arg name="user_debug" default="false"/>
+
+    <!-- Include the empty world to remove any objects -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(find gazebo_ros)/worlds/$(arg wname).world"/> <!-- Empty world -->
+        <arg name="debug" value="$(arg debug)"/>
+        <arg name="gui" value="$(arg gui)"/>
+        <arg name="paused" value="$(arg paused)"/>
+        <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+        <arg name="headless" value="$(arg headless)"/>
+    </include>
+
+    <!-- Load the robot's URDF -->
+    <param name="robot_description"
+           command="$(find xacro)/xacro --inorder '$(arg dollar)$(arg robot_path)/xacro/robot.xacro' 
+           DEBUG:=$(arg user_debug)"/>
+
+    <!-- Spawn the robot in the world -->
+    <node pkg="gazebo_ros" type="spawn_model" name="urdf_spawner" respawn="false" output="screen"
+          args="-urdf -z 0.6 -model $(arg rname)_gazebo -param robot_description -unpause"/>
+
+    <!-- Load joint controller configurations from YAML file to parameter server -->
+    <rosparam file="$(arg dollar)$(arg robot_path)/config/robot_control.yaml" command="load"/>
+
+    <!-- Load the controllers -->
+    <node pkg="controller_manager" type="spawner" name="controller_spawner" respawn="false"
+          output="screen" ns="/$(arg rname)_gazebo" args="joint_state_controller
+          FL_hip_controller FL_thigh_controller FL_calf_controller
+          FR_hip_controller FR_thigh_controller FR_calf_controller
+          RL_hip_controller RL_thigh_controller RL_calf_controller
+          RR_hip_controller RR_thigh_controller RR_calf_controller"/>
+
+    <!-- Convert joint states to TF transforms for RViz -->
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher"
+          respawn="false" output="screen">
+        <remap from="/joint_states" to="/$(arg rname)_gazebo/joint_states"/>
+    </node>
+
+    <!-- Optionally include the controller launch -->
+    <include file="$(find unitree_controller)/launch/set_ctrl.launch">
+        <arg name="rname" value="$(arg rname)"/>
+    </include>
+    <node name="spawn_cone" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+      args="-file ~/catkin_ws_go1_full/src/go1_full/unitree_ros/unitree_gazebo/worlds/building_editor_models/cone/model.sdf -sdf -model upside_down_cone -x 0 -y 0 -z 2.0 -R 3.1416 -P 0 -Y 0"/>
+
+</launch>
+
+

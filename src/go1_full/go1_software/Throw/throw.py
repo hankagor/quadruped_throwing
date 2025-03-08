@@ -1,0 +1,73 @@
+#!/usr/bin/env python3
+
+import rospy
+import numpy as np
+from std_msgs.msg import Float64MultiArray
+
+def interpolate_positions(current, next, t, total_time):
+    alpha = min(t / total_time, 1.0)  # Ensure that alpha does not exceed 1
+    return (1 - alpha) * np.array(current) + alpha * np.array(next)
+
+def catchobj_publisher():
+    rospy.init_node('catchobj_params_publisher', anonymous=True)
+    pub = rospy.Publisher('/catchobj_params', Float64MultiArray, queue_size=1)
+    rospy.sleep(1.0)
+    freq = 500
+    rate = rospy.Rate(freq)  # 100 Hz
+    
+    start = [-0.5, 0.0, 0.4]
+    end = [0.3, 0.0, 1.0]
+
+    total_time = 0.15
+
+    start_time = rospy.get_time()
+    steps = total_time * freq
+
+    time_step = 1.0 / freq 
+    cnt = 0.0
+    
+    close = 1
+    msg = Float64MultiArray()
+    msg.data = [0.5, start[0], start[1], start[2], 1]
+    pub.publish(msg)
+    rospy.loginfo("reset")
+    rospy.sleep(0.2)
+
+    while not rospy.is_shutdown():
+        elapsed_time = rospy.get_time() - start_time
+        rospy.loginfo(elapsed_time)
+        k = min(cnt / steps, 1.0)
+        rospy.loginfo(f"step = {cnt}, percent = {k}")
+        if k >= 0.5:
+            close = 0
+        current_pos = (1.0 - k) * np.array(start) + k * np.array(end)
+
+        time_remaining = max(total_time - elapsed_time, 0)
+
+        msg = Float64MultiArray()
+        msg.data = [time_step, current_pos[0], current_pos[1], current_pos[2], close]
+
+        pub.publish(msg)
+        rospy.loginfo(f"Published: time_remaining={time_remaining}, pos={current_pos.tolist()}")
+
+        if cnt * time_step >= total_time:
+            rospy.loginfo("Reached target position.")
+            break
+        cnt += 1.0
+        rate.sleep()
+    rospy.sleep(1.0)
+    msg.data = [0.5, start[0], start[1], start[2], 1]
+    pub.publish(msg)
+    rospy.loginfo("reset")
+    # rospy.sleep(1.0)
+    # msg = Float64MultiArray()
+    # msg.data = [1.0, end[0], end[1], end[2]]
+    # pub.publish(msg)
+    # rospy.loginfo("end")
+    # rate.sleep()
+
+if __name__ == '__main__':
+    try:
+        catchobj_publisher()
+    except rospy.ROSInterruptException:
+        pass
