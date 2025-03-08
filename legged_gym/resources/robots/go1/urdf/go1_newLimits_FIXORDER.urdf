@@ -1,0 +1,751 @@
+<?xml version="1.0" ?>
+<robot name="go1_description" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <material name="black">
+    <color rgba="0.0 0.0 0.0 1.0"/>
+  </material>
+  <material name="blue">
+    <!-- <color rgba="0.0 0.0 0.8 1.0"/> -->
+    <color rgba="0.0 0.0    0.4470    0.7410 1.0"/>
+  </material>
+  <material name="green">
+    <color rgba="0.0 0.8 0.0 1.0"/>
+  </material>
+  <material name="grey">
+    <color rgba="0.2 0.2 0.2 1.0"/>
+  </material>
+  <material name="silver">
+    <color rgba="0.913725490196 0.913725490196 0.847058823529 1.0"/>
+  </material>
+  <material name="orange">
+    <color rgba="1.0 0.423529411765 0.0392156862745 1.0"/>
+  </material>
+  <material name="brown">
+    <color rgba="0.870588235294 0.811764705882 0.764705882353 1.0"/>
+  </material>
+  <material name="red">
+    <color rgba="0.8 0.0 0.0 1.0"/>
+  </material>
+  <material name="white">
+    <color rgba="1.0 1.0 1.0 1.0"/>
+  </material>
+  <material name="aquablue" >
+    <color rgba="0.00784313725490196 0.8470588235294118 0.9137254901960784 1.0" />
+  </material>
+
+   <material name="walk">
+    <color rgba="0.0 0.0 0.0 1.0"/>
+  </material>
+  <material name="amble">
+    <color rgba="0.0    0.4470    0.7410 1.0"/>
+  </material>
+  <material name="trot">
+    <color rgba="0.8500    0.3250    0.0980 1.0"/>
+  </material>
+  <material name="pace">
+    <color rgba="0.9290    0.6940    0.1250 1.0"/>
+  </material>
+  <material name="bound">
+    <color rgba="0.4940    0.1840    0.5560 1.0"/>
+  </material>
+  <material name="pronk">
+    <color rgba="0.4660    0.6740    0.1880 1.0"/>
+  </material>
+  <material name="canter">
+    <color rgba="0.3010    0.7450    0.9330 1.0"/>
+  </material>
+  <material name="transverse">
+    <color rgba="0.6350    0.0780    0.1840 1.0"/>
+  </material>
+  <material name="rotary">
+    <color rgba="0.1 0.8 0.5  1.0"/>
+  </material>
+
+
+  <link name="base">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="floating_base" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="base"/>
+    <child link="trunk"/>
+  </joint>
+  <link name="trunk">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="../meshes/trunk.dae" scale="1 1 1"/>
+      </geometry>
+      <!-- <material name="canter"/> -->
+    </visual>
+    <!-- <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.3762 0.0935 0.114"/>
+      </geometry>
+    </collision> -->
+    <!-- More reasonable collision -->
+    <collision>
+      <origin rpy="0 0 0" xyz="0.05 0 0"/>
+      <geometry>
+        <box size="0.55 0.3 0.114"/> 
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.0223 0.002 -0.0005"/>
+      <mass value="5.204"/>
+      <inertia ixx="0.0168352186" ixy="0.0004636141" ixz="0.0002367952" iyy="0.0656071082" iyz="3.6671e-05" izz="0.0742720659"/>
+    </inertial>
+  </link>
+  <joint name="imu_joint" type="fixed">
+    <parent link="trunk"/>
+    <child link="imu_link"/>
+    <origin rpy="0 0 0" xyz="-0.01592 -0.06659 -0.00617"/>
+    <!-- <origin rpy="0 0 0" xyz="0 0 0"/> -->
+  </joint>
+  <link name="imu_link">
+    <inertial>
+      <mass value="0.001"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.001 0.001 0.001"/>
+      </geometry>
+      <!-- <material name="red"/> -->
+    </visual>
+<!--     <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size=".001 .001 .001"/>
+      </geometry>
+    </collision> -->
+  </link>
+  <joint name="AFR_hip_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="0.1881 -0.04675 0"/>
+    <parent link="trunk"/>
+    <child link="AFR_hip"/>
+    <axis xyz="1 0 0"/>
+    <!-- <dynamics damping="0.01" friction="0.2"/> -->
+    <dynamics damping="0" friction="0"/>
+    <limit effort="23.7" lower="-1.0471975512" upper="1.0471975512" velocity="30.1"/>
+  </joint>
+  <link name="AFR_hip">
+    <visual>
+      <origin rpy="3.14159265359 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="../meshes/hip.dae" scale="1 1 1"/>
+      </geometry>
+      <!-- <material name="orange"/> -->
+    </visual>
+<!--     <collision>
+      <origin rpy="1.57079632679 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.04" radius="0.046"/>
+      </geometry>
+    </collision> -->
+    <inertial>
+      <origin rpy="0 0 0" xyz="-0.00541 0.00074 6e-06"/>
+      <mass value="0.591"/>
+      <inertia ixx="0.000374268192" ixy="-3.6844422e-05" ixz="-9.86754e-07" iyy="0.000635923669" iyz="1.172894e-06" izz="0.000457647394"/>
+    </inertial>
+  </link>
+  <joint name="AFR_hip_fixed" type="fixed">
+    <origin rpy="0 0 0" xyz="0 -0.08 0"/>
+    <parent link="AFR_hip"/>
+    <child link="AFR_thigh_shoulder"/>
+  </joint>
+  <!-- this link is only for collision -->
+  <link name="AFR_thigh_shoulder">
+<!--     <collision>
+      <origin rpy="1.57079632679 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.032" radius="0.041"/>
+      </geometry>
+    </collision> -->
+  </link>
+  <joint name="AFR_thigh_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="0 -0.08 0"/>
+    <parent link="AFR_hip"/>
+    <child link="AFR_thigh"/>
+    <axis xyz="0 1 0"/>
+    <!-- <dynamics damping="0.01" friction="0.2"/> -->
+    <dynamics damping="0" friction="0"/>
+    <limit effort="23.7" lower="-3.14" upper="3.14" velocity="30.1"/>
+  </joint>
+  <link name="AFR_thigh">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="../meshes/thigh_mirror.dae" scale="1 1 1"/>
+      </geometry>
+      <!-- <material name="orange"/> -->
+    </visual>
+    <collision>
+      <origin rpy="0 1.57079632679 0" xyz="0 0 -0.1065"/>
+      <geometry>
+        <box size="0.213 0.0245 0.034"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="-0.003468 0.018947 -0.032736"/>
+      <mass value="0.92"/>
+      <inertia ixx="0.005851561134" ixy="-1.783284e-06" ixz="0.000328291374" iyy="0.005596155105" iyz="-2.1430713e-05" izz="0.00107157026"/>
+    </inertial>
+  </link>
+  <joint name="AFR_calf_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="0 0 -0.213"/>
+    <parent link="AFR_thigh"/>
+    <child link="AFR_calf"/>
+    <axis xyz="0 1 0"/>
+    <!-- <dynamics damping="0.01" friction="0.2"/> -->
+    <dynamics damping="0" friction="0"/>
+    <limit effort="23.7" lower="-2.72271363311" upper="-0.837758040957" velocity="30.1"/>
+  </joint>
+  <link name="AFR_calf">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="../meshes/calf.dae" scale="1 1 1"/>
+      </geometry>
+      <!-- <material name="orange"/> -->
+    </visual>
+    <collision>
+      <origin rpy="0 1.57079632679 0" xyz="0 0 -0.1065"/>
+      <geometry>
+        <box size="0.213 0.016 0.016"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.006286 0.001307 -0.122269"/>
+      <mass value="0.131"/>
+      <inertia ixx="0.002939186297" ixy="1.440899e-06" ixz="-0.00010535955" iyy="0.00295576935" iyz="-2.4397752e-05" izz="3.0273372e-05"/>
+    </inertial>
+  </link>
+  <joint name="AFR_foot_fixed" type="fixed" dont_collapse="true">
+    <origin rpy="0 0 0" xyz="0 0 -0.213"/>
+    <parent link="AFR_calf"/>
+    <child link="AFR_foot"/>
+  </joint>
+  <link name="AFR_foot">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <sphere radius="0.01"/>
+      </geometry>
+      <!-- <material name="orange"/> -->
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <sphere radius="0.02"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.06"/>
+      <inertia ixx="9.6e-06" ixy="0.0" ixz="0.0" iyy="9.6e-06" iyz="0.0" izz="9.6e-06"/>
+    </inertial>
+  </link>
+<!--   <transmission name="AFR_hip_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="AFR_hip_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="AFR_hip_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="AFR_thigh_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="AFR_thigh_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="AFR_thigh_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="AFR_calf_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="AFR_calf_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="AFR_calf_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission> -->
+  <joint name="BFL_hip_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="0.1881 0.04675 0"/>
+    <parent link="trunk"/>
+    <child link="BFL_hip"/>
+    <axis xyz="1 0 0"/>
+    <!-- <dynamics damping="0.01" friction="0.2"/> -->
+    <dynamics damping="0" friction="0"/>
+    <limit effort="23.7" lower="-1.0471975512" upper="1.0471975512" velocity="30.1"/>
+  </joint>
+  <link name="BFL_hip">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="../meshes/hip.dae" scale="1 1 1"/>
+      </geometry>
+      <!-- <material name="orange"/> -->
+    </visual>
+<!--     <collision>
+      <origin rpy="1.57079632679 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.04" radius="0.046"/>
+      </geometry>
+    </collision> -->
+    <inertial>
+      <origin rpy="0 0 0" xyz="-0.00541 -0.00074 6e-06"/>
+      <mass value="0.591"/>
+      <inertia ixx="0.000374268192" ixy="3.6844422e-05" ixz="-9.86754e-07" iyy="0.000635923669" iyz="-1.172894e-06" izz="0.000457647394"/>
+    </inertial>
+  </link>
+  <joint name="BFL_hip_fixed" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0.08 0"/>
+    <parent link="BFL_hip"/>
+    <child link="BFL_thigh_shoulder"/>
+  </joint>
+  <!-- this link is only for collision -->
+  <link name="BFL_thigh_shoulder">
+<!--     <collision>
+      <origin rpy="1.57079632679 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.032" radius="0.041"/>
+      </geometry>
+    </collision> -->
+  </link>
+  <joint name="BFL_thigh_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="0 0.08 0"/>
+    <parent link="BFL_hip"/>
+    <child link="BFL_thigh"/>
+    <axis xyz="0 1 0"/>
+    <!-- <dynamics damping="0.01" friction="0.2"/> -->
+    <dynamics damping="0" friction="0"/>
+    <limit effort="23.7" lower="-3.14" upper="3.14" velocity="30.1"/>
+  </joint>
+  <link name="BFL_thigh">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="../meshes/thigh.dae" scale="1 1 1"/>
+      </geometry>
+      <!-- <material name="orange"/> -->
+    </visual>
+    <collision>
+      <origin rpy="0 1.57079632679 0" xyz="0 0 -0.1065"/>
+      <geometry>
+        <box size="0.213 0.0245 0.034"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="-0.003468 -0.018947 -0.032736"/>
+      <mass value="0.92"/>
+      <inertia ixx="0.005851561134" ixy="1.783284e-06" ixz="0.000328291374" iyy="0.005596155105" iyz="2.1430713e-05" izz="0.00107157026"/>
+    </inertial>
+  </link>
+  <joint name="BFL_calf_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="0 0 -0.213"/>
+    <parent link="BFL_thigh"/>
+    <child link="BFL_calf"/>
+    <axis xyz="0 1 0"/>
+    <!-- <dynamics damping="0.01" friction="0.2"/> -->
+    <dynamics damping="0" friction="0"/>
+    <limit effort="23.7" lower="-2.72271363311" upper="-0.837758040957" velocity="30.1"/>
+  </joint>
+  <link name="BFL_calf">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="../meshes/calf.dae" scale="1 1 1"/>
+      </geometry>
+      <!-- <material name="orange"/> -->
+    </visual>
+    <collision>
+      <origin rpy="0 1.57079632679 0" xyz="0 0 -0.1065"/>
+      <geometry>
+        <box size="0.213 0.016 0.016"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.006286 0.001307 -0.122269"/>
+      <mass value="0.131"/>
+      <inertia ixx="0.002939186297" ixy="1.440899e-06" ixz="-0.00010535955" iyy="0.00295576935" iyz="-2.4397752e-05" izz="3.0273372e-05"/>
+    </inertial>
+  </link>
+  <joint name="BFL_foot_fixed" type="fixed" dont_collapse="true">
+    <origin rpy="0 0 0" xyz="0 0 -0.213"/>
+    <parent link="BFL_calf"/>
+    <child link="BFL_foot"/>
+  </joint>
+  <link name="BFL_foot">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <sphere radius="0.01"/>
+      </geometry>
+      <!-- <material name="orange"/> -->
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <sphere radius="0.02"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.06"/>
+      <inertia ixx="9.6e-06" ixy="0.0" ixz="0.0" iyy="9.6e-06" iyz="0.0" izz="9.6e-06"/>
+    </inertial>
+  </link>
+<!--   <transmission name="BFL_hip_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="BFL_hip_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="BFL_hip_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="BFL_thigh_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="BFL_thigh_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="BFL_thigh_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="BFL_calf_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="BFL_calf_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="BFL_calf_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission> -->
+  <joint name="CRR_hip_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="-0.1881 -0.04675 0"/>
+    <parent link="trunk"/>
+    <child link="CRR_hip"/>
+    <axis xyz="1 0 0"/>
+    <!-- <dynamics damping="0.01" friction="0.2"/> -->
+    <dynamics damping="0" friction="0"/>
+    <limit effort="23.7" lower="-1.0471975512" upper="1.0471975512" velocity="30.1"/>
+  </joint>
+  <link name="CRR_hip">
+    <visual>
+      <origin rpy="3.14159265359 3.14159265359 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="../meshes/hip.dae" scale="1 1 1"/>
+      </geometry>
+      <!-- <material name="orange"/> -->
+    </visual>
+<!--     <collision>
+      <origin rpy="1.57079632679 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.04" radius="0.046"/>
+      </geometry>
+    </collision> -->
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.00541 0.00074 6e-06"/>
+      <mass value="0.591"/>
+      <inertia ixx="0.000374268192" ixy="3.6844422e-05" ixz="9.86754e-07" iyy="0.000635923669" iyz="1.172894e-06" izz="0.000457647394"/>
+    </inertial>
+  </link>
+  <joint name="CRR_hip_fixed" type="fixed">
+    <origin rpy="0 0 0" xyz="0 -0.08 0"/>
+    <parent link="CRR_hip"/>
+    <child link="CRR_thigh_shoulder"/>
+  </joint>
+  <!-- this link is only for collision -->
+  <link name="CRR_thigh_shoulder">
+<!--     <collision>
+      <origin rpy="1.57079632679 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.032" radius="0.041"/>
+      </geometry>
+    </collision> -->
+  </link>
+  <joint name="CRR_thigh_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="0 -0.08 0"/>
+    <parent link="CRR_hip"/>
+    <child link="CRR_thigh"/>
+    <axis xyz="0 1 0"/>
+    <!-- <dynamics damping="0.01" friction="0.2"/> -->
+    <dynamics damping="0" friction="0"/>
+    <limit effort="23.7" lower="-3.14" upper="3.14" velocity="30.1"/>
+  </joint>
+  <link name="CRR_thigh">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="../meshes/thigh_mirror.dae" scale="1 1 1"/>
+      </geometry>
+      <!-- <material name="orange"/> -->
+    </visual>
+    <collision>
+      <origin rpy="0 1.57079632679 0" xyz="0 0 -0.1065"/>
+      <geometry>
+        <box size="0.213 0.0245 0.034"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="-0.003468 0.018947 -0.032736"/>
+      <mass value="0.92"/>
+      <inertia ixx="0.005851561134" ixy="-1.783284e-06" ixz="0.000328291374" iyy="0.005596155105" iyz="-2.1430713e-05" izz="0.00107157026"/>
+    </inertial>
+  </link>
+  <joint name="CRR_calf_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="0 0 -0.213"/>
+    <parent link="CRR_thigh"/>
+    <child link="CRR_calf"/>
+    <axis xyz="0 1 0"/>
+    <!-- <dynamics damping="0.01" friction="0.2"/> -->
+    <dynamics damping="0" friction="0"/>
+    <limit effort="23.7" lower="-2.72271363311" upper="-0.837758040957" velocity="30.1"/>
+  </joint>
+  <link name="CRR_calf">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="../meshes/calf.dae" scale="1 1 1"/>
+      </geometry>
+      <!-- <material name="orange"/> -->
+    </visual>
+    <collision>
+      <origin rpy="0 1.57079632679 0" xyz="0 0 -0.1065"/>
+      <geometry>
+        <box size="0.213 0.016 0.016"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.006286 0.001307 -0.122269"/>
+      <mass value="0.131"/>
+      <inertia ixx="0.002939186297" ixy="1.440899e-06" ixz="-0.00010535955" iyy="0.00295576935" iyz="-2.4397752e-05" izz="3.0273372e-05"/>
+    </inertial>
+  </link>
+  <joint name="CRR_foot_fixed" type="fixed" dont_collapse="true">
+    <origin rpy="0 0 0" xyz="0 0 -0.213"/>
+    <parent link="CRR_calf"/>
+    <child link="CRR_foot"/>
+  </joint>
+  <link name="CRR_foot">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <sphere radius="0.01"/>
+      </geometry>
+      <!-- <material name="orange"/> -->
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <sphere radius="0.02"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.06"/>
+      <inertia ixx="9.6e-06" ixy="0.0" ixz="0.0" iyy="9.6e-06" iyz="0.0" izz="9.6e-06"/>
+    </inertial>
+  </link>
+  <!-- <transmission name="CRR_hip_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="CRR_hip_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="CRR_hip_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="CRR_thigh_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="CRR_thigh_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="CRR_thigh_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="CRR_calf_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="CRR_calf_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="CRR_calf_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission> -->
+  <joint name="DRL_hip_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="-0.1881 0.04675 0"/>
+    <parent link="trunk"/>
+    <child link="DRL_hip"/>
+    <axis xyz="1 0 0"/>
+    <!-- <dynamics damping="0.01" friction="0.2"/> -->
+    <dynamics damping="0" friction="0"/>
+    <limit effort="23.7" lower="-1.0471975512" upper="1.0471975512" velocity="30.1"/>
+  </joint>
+  <link name="DRL_hip">
+    <visual>
+      <origin rpy="0 3.14159265359 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="../meshes/hip.dae" scale="1 1 1"/>
+      </geometry>
+      <!-- <material name="orange"/> -->
+    </visual>
+<!--     <collision>
+      <origin rpy="1.57079632679 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.04" radius="0.046"/>
+      </geometry>
+    </collision> -->
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.00541 -0.00074 6e-06"/>
+      <mass value="0.591"/>
+      <inertia ixx="0.000374268192" ixy="-3.6844422e-05" ixz="9.86754e-07" iyy="0.000635923669" iyz="-1.172894e-06" izz="0.000457647394"/>
+    </inertial>
+  </link>
+  <joint name="DRL_hip_fixed" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0.08 0"/>
+    <parent link="DRL_hip"/>
+    <child link="DRL_thigh_shoulder"/>
+  </joint>
+  <!-- this link is only for collision -->
+  <link name="DRL_thigh_shoulder">
+<!--     <collision>
+      <origin rpy="1.57079632679 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.032" radius="0.041"/>
+      </geometry>
+    </collision> -->
+  </link>
+  <joint name="DRL_thigh_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="0 0.08 0"/>
+    <parent link="DRL_hip"/>
+    <child link="DRL_thigh"/>
+    <axis xyz="0 1 0"/>
+    <!-- <dynamics damping="0.01" friction="0.2"/> -->
+    <dynamics damping="0" friction="0"/>
+    <limit effort="23.7" lower="-3.14" upper="3.14" velocity="30.1"/>
+  </joint>
+  <link name="DRL_thigh">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="../meshes/thigh.dae" scale="1 1 1"/>
+      </geometry>
+      <!-- <material name="orange"/> -->
+    </visual>
+    <collision>
+      <origin rpy="0 1.57079632679 0" xyz="0 0 -0.1065"/>
+      <geometry>
+        <box size="0.213 0.0245 0.034"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="-0.003468 -0.018947 -0.032736"/>
+      <mass value="0.92"/>
+      <inertia ixx="0.005851561134" ixy="1.783284e-06" ixz="0.000328291374" iyy="0.005596155105" iyz="2.1430713e-05" izz="0.00107157026"/>
+    </inertial>
+  </link>
+  <joint name="DRL_calf_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="0 0 -0.213"/>
+    <parent link="DRL_thigh"/>
+    <child link="DRL_calf"/>
+    <axis xyz="0 1 0"/>
+    <!-- <dynamics damping="0.01" friction="0.2"/> -->
+    <dynamics damping="0" friction="0"/>
+    <limit effort="23.7" lower="-2.72271363311" upper="-0.837758040957" velocity="30.1"/>
+  </joint>
+  <link name="DRL_calf">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="../meshes/calf.dae" scale="1 1 1"/>
+      </geometry>
+      <!-- <material name="orange"/> -->
+    </visual>
+    <collision>
+      <origin rpy="0 1.57079632679 0" xyz="0 0 -0.1065"/>
+      <geometry>
+        <box size="0.213 0.016 0.016"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.006286 0.001307 -0.122269"/>
+      <mass value="0.131"/>
+      <inertia ixx="0.002939186297" ixy="1.440899e-06" ixz="-0.00010535955" iyy="0.00295576935" iyz="-2.4397752e-05" izz="3.0273372e-05"/>
+    </inertial>
+  </link>
+  <joint name="DRL_foot_fixed" type="fixed" dont_collapse="true">
+    <origin rpy="0 0 0" xyz="0 0 -0.213"/>
+    <parent link="DRL_calf"/>
+    <child link="DRL_foot"/>
+  </joint>
+  <link name="DRL_foot">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <sphere radius="0.01"/>
+      </geometry>
+      <!-- <material name="orange"/> -->
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <sphere radius="0.02"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.06"/>
+      <inertia ixx="9.6e-06" ixy="0.0" ixz="0.0" iyy="9.6e-06" iyz="0.0" izz="9.6e-06"/>
+    </inertial>
+  </link>
+  <!-- <transmission name="DRL_hip_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="DRL_hip_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="DRL_hip_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="DRL_thigh_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="DRL_thigh_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="DRL_thigh_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="DRL_calf_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="DRL_calf_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="DRL_calf_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission> -->
+</robot>
+

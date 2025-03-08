@@ -1,8 +1,0 @@
-legged_gym/experiment logs/*.csv
-legged_gym/log_all_episodes.csv
-legged_gym/logs/**/*.pt
-legged_gym/logs/**/*.tfevents.*
-src/go1_full/build/CMakeFiles/CMakeOutput.log
-legged_gym/logfirst.csv
-*.pt
-*.csv
